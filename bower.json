@@ -1,0 +1,21 @@
+{
+  "name": "wpl-common",
+  "homepage": "https://github.com/victoras/wpl-common",
+  "authors": [
+    "WPlook Studio"
+  ],
+  "description": "Common components for WPlook Studio themes",
+  "main": "",
+  "keywords": [
+    "wordpress",
+    "wplook"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
