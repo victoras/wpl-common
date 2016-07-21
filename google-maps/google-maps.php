@@ -1,0 +1,105 @@
+<?php
+
+/**
+ * Class for interfacing with the Google Maps API. At the moment, all it does
+ * is store Google Maps Geocaching API long/lat coordinates in the database
+ * so addresses can be displayed on maps without running over API limits.
+ *
+ * @package WordPress
+ * @subpackage WPL Common
+ * @author WPlook Studio
+ */
+class WPlook_Google_Maps {
+
+	/**
+	 * Variable containing instance wide settings. Contains default settings
+	 * unless overwritten in constructor.
+	 *
+	 * @since 1.0
+	 * @access public
+	 * @param array $instance_opts Array of options for this instance.
+	 */
+	private $options = array(
+		'db_address_field' => 'wplook_map_coordinates',
+		'api_key' => null
+	);
+
+	/**
+	 * Constructor for applying instance wide settings - mainly the API key.
+	 *
+	 * @since 1.0
+	 * @access public
+	 * @param array $instance_opts Array of options for this instance.
+	 */
+	public function __construct( $instance_opts ) {
+		$this->options = array_merge( $this->options, $instance_opts );
+	}
+
+	/**
+	 * Retrieves the coordinates from the database or makes a new API query
+	 * if none are available for this address.
+	 *
+	 * @since 1.0
+	 * @access public
+	 * @param string $address Human readable address for which to get coordinates.
+	 * @return array Named array of lat/long coordinates.
+	 */
+	public function get_coordinates( $address ) {
+
+		$map_coordinates = get_option( $this->options['db_address_field'] );
+
+		if( $map_coordinates == false || !array_key_exists( $address, $map_coordinates ) ) {
+			error_log( 'performing API request' );
+			$coordinates = $this->geocaching_api_request( $address );
+
+			$address_coordinates = array(
+				$address => $coordinates
+			);
+
+			if( is_array( $map_coordinates ) ) { // If there are existing coordinates
+				$option_address_coordinates = array_merge( $map_coordinates, $address_coordinates );
+			} else { // Start new array otherwise
+				$option_address_coordinates = $address_coordinates;
+			}
+
+			if( $coordinates != false ) {
+				update_option( $this->options['db_address_field'], $option_address_coordinates );
+			}
+			
+			return $coordinates;
+		} else {
+			return $map_coordinates[$address];
+		}
+
+	}
+
+	/**
+	 * Makes a Google Maps Geocaching API request and returns the result. 
+	 *
+	 * @since 1.0
+	 * @access private
+	 * @param string $address Human readable address for which to get coordinates.
+	 * @return array|bool Named array of lat/long coordinates, or false on failure.
+	 */
+	private function geocaching_api_request( $address ) {
+
+		$json = file_get_contents( 'https://maps.googleapis.com/maps/api/geocode/json?address=' . urlencode( $address ) . '&key=' . urlencode( $this->options['api_key'] ) );
+		$json = json_decode( $json );
+
+		if( $json->status != 'OK' ) {
+			throw new Exception( 'Something went wrong when getting the coordinates for "' . $address . '" from the Google Maps Geocaching API. Please try again.' );
+			return false;
+		} else {
+			$result = array(
+				'latitude' => $json->results[0]->geometry->location->lat,
+				'longitude' => $json->results[0]->geometry->location->lng
+			);
+
+			return $result;
+		}
+
+	}
+
+}
+
+?>
