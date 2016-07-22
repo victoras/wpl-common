@@ -6,6 +6,9 @@
 
 (function($) {
 
+	/**
+	 * Function used to link the plugin object to the jQuery plugin.
+	 */
 	var wplGoogleMaps = function( elements, options ) {
 
 		this.elements = elements;
@@ -14,9 +17,14 @@
 
 	};
 
+	/**
+	 * Plugin object.
+	 */
 	wplGoogleMaps.prototype = {
 
-		// Default settings
+		/**
+		 * Object containing default settings.
+		 */
 		defaults: {
 	    	latitude: null, // Latitude of map marker and centre.
 	    	longitude: null, // Longitude of map marker and centre.
@@ -92,6 +100,9 @@
 
 	};
 
+	/**
+	 * Register this as a jQuery plugin.
+	 */
     $.fn.wplGoogleMaps = function( options ) {
 
         new wplGoogleMaps( this, options );
