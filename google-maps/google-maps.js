@@ -43,7 +43,7 @@
 					return;
 				}
 
-				var map = new google.maps.Map( document.getElementById( $( element ).attr( 'id' ) ), {
+				var map = new google.maps.Map( $( element )[0], {
 					center: {
 						lat: parseFloat( self.options.latitude ),
 						lng: parseFloat( self.options.longitude )
