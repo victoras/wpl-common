@@ -137,8 +137,8 @@
 	 *
 	 * @param {string|object} methodOrOptions - Either a method found in the plugin or an object of options to start the plugin with.
 	*/
-	$.fn[PLUGIN_NS] = function( methodOrOptions )
-	{
+	$.fn[PLUGIN_NS] = function( methodOrOptions ) {
+
 		if (!$(this).length) {
 			return $(this);
 		}
@@ -146,7 +146,7 @@
 			
 		// CASE: action method (public method on PLUGIN class)		
 		if ( instance
-				&& methodOrOptions.indexOf('_') != 0
+				&& ( typeof methodOrOptions === 'string' && methodOrOptions.indexOf('_') != 0 )
 				&& instance[ methodOrOptions ]
 				&& typeof( instance[ methodOrOptions ] ) == 'function' ) {
 			
@@ -170,6 +170,7 @@
 		} else {
 			$.error( 'Method ' +  methodOrOptions + ' does not exist.' );
 		}
+		
 	};
 
 })(jQuery);
