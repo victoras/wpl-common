@@ -82,6 +82,7 @@
 				},
 				zoom: parseFloat( self.options.zoom ),
 				disableDefaultUI: true,
+				scrollwheel: false,
 				styles: [
 					{
 						featureType: 'all',
