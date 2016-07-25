@@ -1,13 +1,21 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <title>WPlook Studio || Google Maps test</title>
+	<title>WPlook Studio || Google Maps test</title>
+
+	<style>
+		.map {
+			height: 400px;
+			width: 400px;
+			display: inline-block;
+		}
+	</style>
 </head>
 
 <body>
-	<div class="map" id="map-1" style="height: 400px; width: 400px;"></div>
-	<div class="map" id="map-2" style="height: 400px; width: 400px;"></div>
-	<div class="map" id="map-3" style="height: 400px; width: 400px;"></div>
+	<div class="map" id="map-1" data-latitude="51.503304" data-longitude="-0.119432"></div>
+	<div class="map" id="map-2" data-latitude="51.501551" data-longitude="-0.141236"></div>
+	<div class="map" id="map-3" data-latitude="51.505264" data-longitude="-0.075536"></div>
 
 	<script src="https://code.jquery.com/jquery-3.1.0.js"></script>
 	<script src="https://maps.googleapis.com/maps/api/js"></script>
@@ -15,17 +23,9 @@
 	
 	<script>
 		$( document ).ready(function() {
-		    $( '.map' ).wplGoogleMaps({
-    			latitude: 51.503304,
-    			longitude: -0.119432,
-    			// zoom: 20,
-    			// markerImage: '',
-    			styles: {
-    				// hue: '#ffffff',
-    				// saturation: 0,
-    				// lightness: 30
-    			}
-    		});
+			$( '.map' ).each( function( index, element ) {
+				$( element ).wplGoogleMaps();
+			} );
 		});
 	</script>
 </body>
