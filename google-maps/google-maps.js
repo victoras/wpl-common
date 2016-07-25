@@ -27,34 +27,34 @@
 			true, // deep extend
 			{
 				latitude: null, // Latitude of map marker and centre.
-		    	longitude: null, // Longitude of map marker and centre.
-		    	zoom: 15, // Number from 1-20 describing the zoom level of the map.
-		    	marker: {
-		    		image: null, // URL for a custom marker image.
-		    		width: null, // Width of marker image
-		    		height: null // Height of marker image
-		    	},
-		    	styles: {
-		    		hue: null, // A colour to display the map in.
-		    		saturation: null, // Saturation of the map.
-		    		lightness: null // Brightness of the map.
-		    	}
+				longitude: null, // Longitude of map marker and centre.
+				zoom: 15, // Number from 1-20 describing the zoom level of the map.
+				marker: {
+					image: null, // URL for a custom marker image.
+					width: null, // Width of marker image
+					height: null // Height of marker image
+				},
+				styles: {
+					hue: null, // A colour to display the map in.
+					saturation: null, // Saturation of the map.
+					lightness: null // Brightness of the map.
+				}
 			},
 			{
 				latitude: this.$T.data('latitude'),
-		    	longitude: this.$T.data('longitude'),
-		    	zoom: this.$T.data('zoom'),
-		    	marker: {
-		    		image: this.$T.data('marker-image'), // URL for a custom marker image.
-		    		width: this.$T.data('marker-width'), // Width of marker image
-		    		height: this.$T.data('marker-height') // Height of marker image
-		    	},
-		    	styles: {
-		    		hue: this.$T.data('hue'),
-		    		saturation: this.$T.data('saturation'),
-		    		lightness: this.$T.data('lightness')
-		    	}
-			},
+				longitude: this.$T.data('longitude'),
+				zoom: this.$T.data('zoom'),
+				marker: {
+					image: this.$T.data('marker-image'), // URL for a custom marker image.
+					width: this.$T.data('marker-width'), // Width of marker image
+					height: this.$T.data('marker-height') // Height of marker image
+				},
+				styles: {
+					hue: this.$T.data('hue'),
+					saturation: this.$T.data('saturation'),
+					lightness: this.$T.data('lightness')
+				}
+			}
 		);
 		
 		// Plugin wide variables
