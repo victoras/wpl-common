@@ -22,7 +22,7 @@
 		// function for chaining purposes.
 		this.$T = $( target );
 
-		// Object containing default settings.
+		// Object containing default settings and merging it with data attributes
 		this.options = $.extend(
 			true, // deep extend
 			{
@@ -36,7 +36,17 @@
 		    		lightness: null // Brightness of the map.
 		    	}
 			},
-			options
+			{
+				latitude: this.$T.data('latitude'),
+		    	longitude: this.$T.data('longitude'),
+		    	zoom: this.$T.data('zoom'),
+		    	markerImage: this.$T.data('marker'),
+		    	styles: {
+		    		hue: this.$T.data('hue'),
+		    		saturation: this.$T.data('saturation'),
+		    		lightness: this.$T.data('lightness')
+		    	}
+			},
 		);
 		
 		// Plugin wide variables
