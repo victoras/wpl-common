@@ -29,7 +29,11 @@
 				latitude: null, // Latitude of map marker and centre.
 		    	longitude: null, // Longitude of map marker and centre.
 		    	zoom: 15, // Number from 1-20 describing the zoom level of the map.
-		    	markerImage: null, // URL for a custom marker image.
+		    	marker: {
+		    		image: null, // URL for a custom marker image.
+		    		width: null, // Width of marker image
+		    		height: null // Height of marker image
+		    	},
 		    	styles: {
 		    		hue: null, // A colour to display the map in.
 		    		saturation: null, // Saturation of the map.
@@ -40,7 +44,11 @@
 				latitude: this.$T.data('latitude'),
 		    	longitude: this.$T.data('longitude'),
 		    	zoom: this.$T.data('zoom'),
-		    	markerImage: this.$T.data('marker'),
+		    	marker: {
+		    		image: this.$T.data('marker-image'), // URL for a custom marker image.
+		    		width: this.$T.data('marker-width'), // Width of marker image
+		    		height: this.$T.data('marker-height') // Height of marker image
+		    	},
 		    	styles: {
 		    		hue: this.$T.data('hue'),
 		    		saturation: this.$T.data('saturation'),
@@ -105,19 +113,30 @@
 				]
 			} );
 
-			if( self.options.markerImage ) {
-				var icon = {
-					url: self.options.markerImage,
-					scaledSize: new google.maps.Size( 32, 32 )
-				};
+			if( self.options.marker.image ) {
+				// Scale image proportionally to nearest size fitting 32x32px
+				if(
+					( self.options.marker.width != self.options.marker.height ) ||
+					!( self.options.marker.width == 32 && self.options.marker.height == 32 )
+				) {
+					var ratio = Math.min( 32 / self.options.marker.width, 32 / self.options.marker.height );
+					self.options.marker.width = Math.round( self.options.marker.width * ratio );
+					self.options.marker.height = Math.round( self.options.marker.height * ratio );
+				} else {
+					self.options.marker.width = 32;
+					self.options.marker.height = 32;
+				}
 
 				var marker = new google.maps.Marker( {
 					position: {
 						lat: parseFloat( self.options.latitude ),
 						lng: parseFloat( self.options.longitude )
 					},
-					map: self.map,
-					icon: icon
+					icon: {
+						url: self.options.marker.image,
+						scaledSize: new google.maps.Size( self.options.marker.width, self.options.marker.height )
+					},
+					map: self.map
 				} );
 			} else {
 				var marker = new google.maps.Marker( {
