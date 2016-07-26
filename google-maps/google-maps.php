@@ -100,6 +100,55 @@ class WPlook_Google_Maps {
 
 	}
 
+	/**
+	 * Generates a div with data attributes, used by google-maps.js to generate
+	 * the map.
+	 *
+	 * @since 1.0
+	 * @access public
+	 * @param array $args Array of relevant meta fields.
+	 * @return array|bool Named array of lat/long coordinates, or false on failure.
+	 */
+	public function generate_map( $function_args ) {
+
+		// Set up default options
+		$args = array_merge( array(
+			'human_address' => null,
+			'map_address' => null,
+			'marker' => null,
+			'latitude' => null,
+			'longitude' => null,
+			'class' => null
+		), $function_args );
+
+		// Set up coordinates
+		if( !empty( $args['map_address'] ) ) {
+			$coordinates = $this->get_coordinates( $args['map_address'] );
+		} elseif( !empty( $args['human_address'] ) ) {
+			$coordinates = $this->get_coordinates( $args['human_address'] );
+		} elseif( !empty( $args['latitude'] ) && !empty( $args['longitude'] ) ) {
+			$coordinates['latitude'] = $args['latitude'];
+			$coordinates['longitude'] = $args['longitude'];
+		} else {
+			return;
+		}
+
+		// Set up marker, either by ID or URL
+		if( intval( $args['marker'] ) != 0 ) {
+			$marker = wp_get_attachment_image_url( $args['marker'], 'full' );
+			$marker_meta = wp_get_attachment_metadata( $args['marker'] );
+			$marker_width = !empty( $marker_meta ) ? $marker_meta['width'] : false;
+			$marker_height = !empty( $marker_meta ) ? $marker_meta['height'] : false;
+		} else {
+			$marker = $args['marker'];
+		}
+
+		if( !empty( $coordinates ) ) : ?>
+			<div class="google-map <?php echo esc_attr( $args['class'] ); ?>" data-latitude="<?php echo esc_attr( $coordinates['latitude'] ); ?>" data-longitude="<?php echo esc_attr( $coordinates['longitude'] ); ?>" data-marker-image="<?php echo esc_attr( $marker ); ?>" data-marker-width="<?php echo esc_attr( $marker_width ); ?>" data-marker-height="<?php echo esc_attr( $marker_height ); ?>"></div>
+		<?php endif;
+
+	}
+
 }
 
 ?>
