@@ -144,7 +144,7 @@ class WPlook_Google_Maps {
 		}
 
 		if( !empty( $coordinates ) ) : ?>
-			<div class="google-map <?php echo esc_attr( $args['class'] ); ?>" data-latitude="<?php echo esc_attr( $coordinates['latitude'] ); ?>" data-longitude="<?php echo esc_attr( $coordinates['longitude'] ); ?>" data-marker-image="<?php echo esc_attr( $marker ); ?>" data-marker-width="<?php echo esc_attr( $marker_width ); ?>" data-marker-height="<?php echo esc_attr( $marker_height ); ?>"></div>
+			<div class="wplook-google-map <?php echo esc_attr( $args['class'] ); ?>" data-latitude="<?php echo esc_attr( $coordinates['latitude'] ); ?>" data-longitude="<?php echo esc_attr( $coordinates['longitude'] ); ?>" data-marker-image="<?php echo esc_attr( $marker ); ?>" data-marker-width="<?php echo esc_attr( $marker_width ); ?>" data-marker-height="<?php echo esc_attr( $marker_height ); ?>"></div>
 		<?php endif;
 
 	}
