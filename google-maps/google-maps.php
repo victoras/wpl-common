@@ -114,7 +114,7 @@ class WPlook_Google_Maps {
 		// Set up default options
 		$args = array_merge( array(
 			'human_address' => null,
-			'map_address' => null,
+			'maps_address' => null,
 			'marker' => null,
 			'latitude' => null,
 			'longitude' => null,
@@ -122,8 +122,8 @@ class WPlook_Google_Maps {
 		), $function_args );
 
 		// Set up coordinates
-		if( !empty( $args['map_address'] ) ) {
-			$coordinates = $this->get_coordinates( $args['map_address'] );
+		if( !empty( $args['maps_address'] ) ) {
+			$coordinates = $this->get_coordinates( $args['maps_address'] );
 		} elseif( !empty( $args['human_address'] ) ) {
 			$coordinates = $this->get_coordinates( $args['human_address'] );
 		} elseif( !empty( $args['latitude'] ) && !empty( $args['longitude'] ) ) {
