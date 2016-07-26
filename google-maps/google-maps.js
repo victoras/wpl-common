@@ -116,15 +116,16 @@
 			if( self.options.marker.image ) {
 				// Scale image proportionally to nearest size fitting 32x32px
 				if(
-					( self.options.marker.width != self.options.marker.height ) ||
-					!( self.options.marker.width == 32 && self.options.marker.height == 32 )
+					( !self.options.marker.width || !self.options.marker.height ) ||
+					!( self.options.marker.width != self.options.marker.height ) ||
+					( self.options.marker.width == 32 && self.options.marker.height == 32 )
 				) {
+					self.options.marker.width = 32;
+					self.options.marker.height = 32;
+				} else {
 					var ratio = Math.min( 32 / self.options.marker.width, 32 / self.options.marker.height );
 					self.options.marker.width = Math.round( self.options.marker.width * ratio );
 					self.options.marker.height = Math.round( self.options.marker.height * ratio );
-				} else {
-					self.options.marker.width = 32;
-					self.options.marker.height = 32;
 				}
 
 				var marker = new google.maps.Marker( {

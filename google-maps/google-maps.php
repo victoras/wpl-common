@@ -141,6 +141,8 @@ class WPlook_Google_Maps {
 			$marker_height = !empty( $marker_meta ) ? $marker_meta['height'] : false;
 		} else {
 			$marker = $args['marker'];
+			$marker_width = false;
+			$marker_height = false;
 		}
 
 		if( !empty( $coordinates ) ) : ?>
