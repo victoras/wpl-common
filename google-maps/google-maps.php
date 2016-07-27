@@ -87,7 +87,7 @@ class WPlook_Google_Maps {
 		$json = json_decode( $json );
 
 		if( $json->status != 'OK' ) {
-			throw new Exception( 'Something went wrong when getting the coordinates for "' . $address . '" from the Google Maps Geocaching API. Please try again.' );
+			echo 'Something went wrong when getting the coordinates for "' . $address . '" from the Google Maps Geocaching API. Please try again.';
 			return false;
 		} else {
 			$result = array(
