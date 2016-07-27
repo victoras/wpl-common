@@ -34,12 +34,9 @@
 					width: null, // Width of marker image
 					height: null // Height of marker image
 				},
-				styles: {
-					hue: null, // A colour to display the map in.
-					saturation: null, // Saturation of the map.
-					lightness: null // Brightness of the map.
-				}
+				styles: null
 			},
+			options,
 			{
 				latitude: this.$T.data('latitude'),
 				longitude: this.$T.data('longitude'),
@@ -48,11 +45,6 @@
 					image: this.$T.data('marker-image'), // URL for a custom marker image.
 					width: this.$T.data('marker-width'), // Width of marker image
 					height: this.$T.data('marker-height') // Height of marker image
-				},
-				styles: {
-					hue: this.$T.data('hue'),
-					saturation: this.$T.data('saturation'),
-					lightness: this.$T.data('lightness')
 				}
 			}
 		);
@@ -101,16 +93,7 @@
 				zoom: parseFloat( self.options.zoom ),
 				disableDefaultUI: true,
 				scrollwheel: false,
-				styles: [
-					{
-						featureType: 'all',
-						stylers: [
-							{ saturation: parseFloat( self.options.styles.saturation ) },
-							{ lightness: parseFloat( self.options.styles.lightness ) },
-							{ hue: self.options.styles.hue }
-						]
-					},
-				]
+				styles: self.options.styles
 			} );
 
 			if( self.options.marker.image ) {
