@@ -107,9 +107,10 @@ class WPlook_Google_Maps {
 	 * @since 1.0
 	 * @access public
 	 * @param array $args Array of relevant meta fields.
+	 * @param bool $echo Whether to return or echo the code.
 	 * @return array|bool Named array of lat/long coordinates, or false on failure.
 	 */
-	public function generate_map( $function_args ) {
+	public function generate_map( $function_args, $echo = true ) {
 
 		// Set up default options
 		$args = array_merge( array(
@@ -118,7 +119,12 @@ class WPlook_Google_Maps {
 			'marker' => null,
 			'latitude' => null,
 			'longitude' => null,
-			'class' => null
+			'class' => null,
+			'height' => null,
+			'zoom' => null,
+			'saturation' => null,
+			'lightness' => null,
+			'hue' => null
 		), $function_args );
 
 		// Set up coordinates
@@ -145,9 +151,30 @@ class WPlook_Google_Maps {
 			$marker_height = false;
 		}
 
-		if( !empty( $coordinates ) ) : ?>
-			<div class="wplook-google-map <?php echo esc_attr( $args['class'] ); ?>" data-latitude="<?php echo esc_attr( $coordinates['latitude'] ); ?>" data-longitude="<?php echo esc_attr( $coordinates['longitude'] ); ?>" data-marker-image="<?php echo esc_attr( $marker ); ?>" data-marker-width="<?php echo esc_attr( $marker_width ); ?>" data-marker-height="<?php echo esc_attr( $marker_height ); ?>"></div>
-		<?php endif;
+		if( !empty( $coordinates ) ) {
+			ob_start(); ?>
+				<div
+					class="wplook-google-map <?php echo esc_attr( $args['class'] ); ?>"
+					<?php if( !empty( $coordinates['latitude'] ) ) : ?>data-latitude="<?php echo esc_attr( $coordinates['latitude'] ); ?>"<?php endif; ?>
+					<?php if( !empty( $coordinates['longitude'] ) ) : ?>data-longitude="<?php echo esc_attr( $coordinates['longitude'] ); ?>"<?php endif; ?>
+					<?php if( !empty( $marker ) ) : ?>data-marker-image="<?php echo esc_attr( $marker ); ?>"<?php endif; ?>
+					<?php if( !empty( $marker_width ) ) : ?>data-marker-width="<?php echo esc_attr( $marker_width ); ?>"<?php endif; ?>
+					<?php if( !empty( $marker_height ) ) : ?>data-marker-height="<?php echo esc_attr( $marker_height ); ?>"<?php endif; ?>
+					<?php if( !empty( $args['height'] ) ) : ?>style="height: <?php echo intval( $args['height'] ); ?>px;"<?php endif; ?>
+					<?php if( !empty( $args['zoom'] ) ) : ?>data-zoom="<?php echo esc_attr( $args['zoom'] ); ?>"<?php endif; ?>
+					<?php if( !empty( $args['saturation'] ) ) : ?>data-saturation="<?php echo esc_attr( $args['saturation'] ); ?>"<?php endif; ?>
+					<?php if( !empty( $args['lightness'] ) ) : ?>data-lightness="<?php echo esc_attr( $args['lightness'] ); ?>"<?php endif; ?>
+					<?php if( !empty( $args['hue'] ) ) : ?>data-hue="<?php echo esc_attr( $args['hue'] ); ?>"<?php endif; ?>
+					>
+				</div>
+			<?php $html = ob_get_clean();
+		}
+		
+		if( $echo == false ) {
+			return $html;
+		} else {
+			echo $html;
+		}
 
 	}
 

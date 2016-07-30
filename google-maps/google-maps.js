@@ -42,10 +42,13 @@
 				longitude: this.$T.data('longitude'),
 				zoom: this.$T.data('zoom'),
 				marker: {
-					image: this.$T.data('marker-image'), // URL for a custom marker image.
-					width: this.$T.data('marker-width'), // Width of marker image
-					height: this.$T.data('marker-height') // Height of marker image
-				}
+					image: this.$T.data('marker-image'),
+					width: this.$T.data('marker-width'),
+					height: this.$T.data('marker-height')
+				},
+				saturation: this.$T.data('saturation'),
+				lightness: this.$T.data('lightness'),
+				hue: this.$T.data('hue'),
 			}
 		);
 		
@@ -85,6 +88,21 @@
 				return false;
 			}
 
+			if( self.options.saturation || self.options.lightness || self.options.hue ) {
+				var styles = [
+					{
+						featureType: 'all',
+						stylers: [
+							{ saturation: parseFloat( self.options.saturation ) },
+							{ lightness: parseFloat( self.options.lightness ) },
+							{ hue: self.options.hue }
+						]
+					},
+				];
+			} else {
+				var styles = self.options.styles;
+			}
+
 			self.map = new google.maps.Map( $( element )[0], {
 				center: {
 					lat: parseFloat( self.options.latitude ),
@@ -93,7 +111,7 @@
 				zoom: parseFloat( self.options.zoom ),
 				disableDefaultUI: true,
 				scrollwheel: false,
-				styles: self.options.styles
+				styles: styles
 			} );
 
 			if( self.options.marker.image ) {
