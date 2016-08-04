@@ -13,7 +13,7 @@ jQuery(document).ready(function( $ ) {
 		// Check for events here using event delagation
 		// More info here: http://stackoverflow.com/a/5540632
 
-		$( '#customize-controls, .icon-picker-parent' ).on( 'click', '.icon-picker .item', function() {
+		$( '#customize-controls, .icon-picker-parent, .ot-metabox-wrapper .option-tree-setting-wrap' ).on( 'click', '.icon-picker .item', function() {
 
 			// Copy value over to the input box
 			$( this ).parents( parentClass ).find( inputClass ).val( $( this ).data( 'code' ) );
@@ -43,13 +43,13 @@ jQuery(document).ready(function( $ ) {
 		// Remove .selected from icons if field is manually changed
 		var inputValue;
 
-		$( '#customize-controls, .icon-picker-parent' ).on( 'keydown', parentClass + ' ' + inputClass, function() {
+		$( '#customize-controls, .icon-picker-parent, .ot-metabox-wrapper .option-tree-setting-wrap' ).on( 'keydown', parentClass + ' ' + inputClass, function() {
 
 			inputValue = $( this ).val();
 
 		} );
 
-		$( '#customize-controls, .icon-picker-parent' ).on( 'keyup', parentClass + ' ' + inputClass, function() {
+		$( '#customize-controls, .icon-picker-parent, .ot-metabox-wrapper .option-tree-setting-wrap' ).on( 'keyup', parentClass + ' ' + inputClass, function() {
 
 			if( $( this ).val() != inputValue ) {
 				$( this ).parents( parentClass ).find( '.icon-picker .item' ).removeClass( 'selected' );
@@ -58,7 +58,7 @@ jQuery(document).ready(function( $ ) {
 		} );
 
 		// Show more icons button
-		$( '#customize-controls, .icon-picker-parent' ).on( 'click', '.icon-picker .show-more-button', function() {
+		$( '#customize-controls, .icon-picker-parent, .ot-metabox-wrapper .option-tree-setting-wrap' ).on( 'click', '.icon-picker .show-more-button', function() {
 
 			$( this ).parents( '.show-more' ).siblings( '.icon-list' ).css( 'height', 'auto' );
 			$( this ).parents( '.show-more' ).css( 'display', 'none' );
