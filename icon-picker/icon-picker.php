@@ -37,6 +37,9 @@ class WPlook_Icon_Picker {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) ); // For testing purposes
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
+		// Register OT option type
+		add_filter( 'ot_option_types_array', array( $this, 'register_ot_option_type' ) );
+
 	}
 
 	/**
@@ -85,6 +88,8 @@ class WPlook_Icon_Picker {
 		// Select default iconset
 		if( $iconset == false ) {
 			$iconset = $this->get_iconset();
+		} else {
+			$iconset = $this->get_iconset( $iconset );
 		}
 
 		ob_start(); ?>
@@ -117,9 +122,80 @@ class WPlook_Icon_Picker {
 
 	}
 
+	/**
+	 * Build the icon picker as an OptionTree option type.
+	 *
+	 * @since 1.0
+	 * @access public
+	 * @param string $args Arguments passed from OptionTree.
+	 */
+	public function generate_ot_html( $args = array() ) {
+
+		/* turns arguments array into variables */
+		extract( $args );
+		
+		/* verify a description */
+		$has_desc = $field_desc ? true : false;
+		
+		?>
+
+		<div class="icon-picker-parent">
+
+			<div class="format-setting type-wplook_icon_picker <?php echo ( $has_desc ? 'has-desc' : 'no-desc' ); ?>">
+				<?php if( $has_desc ) : ?>
+					<div class="description"><?php echo htmlspecialchars_decode( $field_desc ); ?></div>
+				<?php endif; ?>
+				
+				<div class="format-setting-inner">
+					<input type="text" name="<?php echo esc_attr( $field_name ); ?>" id="<?php echo esc_attr( $field_id ); ?>" value="<?php echo esc_attr( $field_value ); ?>" class="widefat option-tree-ui-input icon-picker-input <?php echo esc_attr( $field_class ); ?>" />
+
+					<?php
+						global $wplook_icon_picker;
+						echo $wplook_icon_picker->generate_html( 'font-awesome', $field_value );
+					?>
+				</div>
+			</div>
+
+		</div>
+
+	<?php }
+
+	/**
+	 * Filter the option types list to add the icon picker to it.
+	 *
+	 * @since 1.0
+	 * @access public
+	 * @param array $types List of option types slugs and names.
+	 * @return array List of option types slugs and names.
+	 */
+	public function register_ot_option_type( $types ) {
+
+		$types['wplook_icon_picker'] = __( 'Icon Picker', 'healthmedical-wpl' );
+
+		return $types;
+
+	}
+
 }
 
 global $wplook_icon_picker;
 $wplook_icon_picker = new WPlook_Icon_Picker;
+
+/**
+ * Create the function which links the class to OptionTree.
+ * OptionTree option types cannot be called from classes, and
+ * their function names must begin with ot_type_, so this is
+ * what this function provides.
+ */
+if( !function_exists( 'ot_type_wplook_icon_picker' ) ) {
+
+	function ot_type_wplook_icon_picker( $args = array() ) {
+
+		global $wplook_icon_picker;
+		$wplook_icon_picker->generate_ot_html( $args );
+
+	}
+
+}
 
 ?>
