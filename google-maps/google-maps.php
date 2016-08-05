@@ -49,7 +49,6 @@ class WPlook_Google_Maps {
 		$map_coordinates = get_option( $this->options['db_address_field'] );
 
 		if( $map_coordinates == false || !array_key_exists( $address, $map_coordinates ) ) {
-			error_log( 'performing API request' );
 			$coordinates = $this->geocaching_api_request( $address );
 
 			$address_coordinates = array(
