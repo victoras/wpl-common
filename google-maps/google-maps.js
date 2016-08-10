@@ -34,7 +34,8 @@
 					width: null, // Width of marker image
 					height: null // Height of marker image
 				},
-				styles: null
+				styles: null,
+				snazzymaps: null
 			},
 			options,
 			{
@@ -48,10 +49,19 @@
 				},
 				saturation: this.$T.data('saturation'),
 				lightness: this.$T.data('lightness'),
-				hue: this.$T.data('hue'),
+				hue: this.$T.data('hue')
 			}
 		);
-		
+
+		var snazzyElement = this.$T.parent().find( '#wplook-google-map-template' );
+		if( snazzyElement.length > 0 ) {
+			var snazzyArray = JSON.parse( this.$T.parent().find( '#wplook-google-map-template' ).html() );
+
+			if( typeof snazzyArray == 'object') {
+				this.options.snazzymaps = snazzyArray;
+			}
+		}
+
 		// Plugin wide variables
 		this.map = null;
 
@@ -99,8 +109,12 @@
 						]
 					},
 				];
-			} else {
+			} else if( self.options.styles ) {
 				var styles = self.options.styles;
+			} else if( self.options.snazzymaps ) {
+				var styles = self.options.snazzymaps;
+			} else {
+				var styles = false;
 			}
 
 			self.map = new google.maps.Map( $( element )[0], {

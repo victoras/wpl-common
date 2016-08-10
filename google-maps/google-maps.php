@@ -123,7 +123,8 @@ class WPlook_Google_Maps {
 			'zoom' => null,
 			'saturation' => null,
 			'lightness' => null,
-			'hue' => null
+			'hue' => null,
+			'snazzymaps' => null,
 		), $function_args );
 
 		// Set up coordinates
@@ -166,6 +167,12 @@ class WPlook_Google_Maps {
 					<?php if( !empty( $args['hue'] ) ) : ?>data-hue="<?php echo esc_attr( $args['hue'] ); ?>"<?php endif; ?>
 					>
 				</div>
+
+				<?php if( !empty( $args['snazzymaps'] ) ) : ?>
+					<script type="text/template" id="wplook-google-map-template">
+						<?php echo $args['snazzymaps']; ?>
+					</script>
+				<?php endif; ?>
 			<?php $html = ob_get_clean();
 		}
 		
