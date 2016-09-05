@@ -124,6 +124,8 @@ class WPlook_Google_Maps {
 			'latitude' => null,
 			'longitude' => null,
 			'class' => null,
+			'id' => null,
+			'style' => null,
 			'height' => null,
 			'zoom' => null,
 			'saturation' => null,
@@ -160,6 +162,8 @@ class WPlook_Google_Maps {
 			ob_start(); ?>
 				<div
 					class="wplook-google-map <?php echo esc_attr( $args['class'] ); ?>"
+					id="<?php echo esc_attr( $args['id'] ); ?>"
+					style="<?php echo esc_attr( $args['style'] ); ?>"
 					<?php if( !empty( $coordinates['latitude'] ) ) : ?>data-latitude="<?php echo esc_attr( $coordinates['latitude'] ); ?>"<?php endif; ?>
 					<?php if( !empty( $coordinates['longitude'] ) ) : ?>data-longitude="<?php echo esc_attr( $coordinates['longitude'] ); ?>"<?php endif; ?>
 					<?php if( !empty( $marker ) ) : ?>data-marker-image="<?php echo esc_attr( $marker ); ?>"<?php endif; ?>
