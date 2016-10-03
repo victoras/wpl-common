@@ -35,7 +35,9 @@
 					height: null // Height of marker image
 				},
 				styles: null,
-				snazzymaps: null
+				snazzymaps: null,
+				offsetX: null,
+				offsetY: null
 			},
 			options,
 			{
@@ -49,7 +51,9 @@
 				},
 				saturation: this.$T.data('saturation'),
 				lightness: this.$T.data('lightness'),
-				hue: this.$T.data('hue')
+				hue: this.$T.data('hue'),
+				offsetX: this.$T.data('offsetX'),
+				offsetY: this.$T.data('offsetY')
 			}
 		);
 
@@ -164,6 +168,32 @@
 				} );
 			}
 
+			if( self.options.offsetX || self.options.offsetY ) {
+				if( self.options.offsetX && typeof self.options.offsetX === 'string' && self.options.offsetX.indexOf( '%' ) != -1 && parseFloat( self.options.offsetX ) <= 100 && parseFloat( self.options.offsetX ) >= -100 ) { // Valid percentage value
+					var containerWidth = $( window ).width();
+					var offset = parseFloat( self.options.offsetX );
+					var offset = offset < 0 ? offset + 50 : offset - 50; // Marker is at 50% by default anyway
+					var x = containerWidth / 100 * offset;
+				} else if( self.options.offsetX ) {
+					var x = parseFloat( self.options.offsetX );
+				} else {
+					var x = 0;
+				}
+
+				if( self.options.offsetY && typeof self.options.offsetY === 'string' && self.options.offsetY.indexOf( '%' ) != -1 && parseFloat( self.options.offsetY ) <= 100 && parseFloat( self.options.offsetY ) >= -100 ) { // Valid percentage value
+					var containerWidth = $( window ).width();
+					var offset = parseFloat( self.options.offsetY );
+					var offset = offset < 0 ? offset + 50 : offset - 50; // Marker is at 50% by default anyway
+					var y = containerWidth / 100 * offset;
+				} else if( self.options.offsetY ) {
+					var y = parseFloat( self.options.offsetY );
+				} else {
+					var y = 0;
+				}
+
+				self.map.panBy( x, y );
+			}
+
 			return this.$T;
 
 		} );
@@ -178,7 +208,7 @@
 
 	/**
 	 * JQUERY HOOK
-	 * 
+	 *
 	 * Generic jQuery plugin instantiation method call logic.
 	 *
 	 * @param {string|object} methodOrOptions - Either a method found in the plugin or an object of options to start the plugin with.
@@ -189,34 +219,34 @@
 			return $(this);
 		}
 		var instance = $(this).data(PLUGIN_NS);
-			
-		// CASE: action method (public method on PLUGIN class)		
+
+		// CASE: action method (public method on PLUGIN class)
 		if ( instance
 				&& ( typeof methodOrOptions === 'string' && methodOrOptions.indexOf('_') != 0 )
 				&& instance[ methodOrOptions ]
 				&& typeof( instance[ methodOrOptions ] ) == 'function' ) {
-			
+
 			return instance[ methodOrOptions ]( Array.prototype.slice.call( arguments, 1 ) );
-				
-				
-		// CASE: argument is options object or empty = initialise			
+
+
+		// CASE: argument is options object or empty = initialise
 		} else if ( typeof methodOrOptions === 'object' || ! methodOrOptions ) {
 
 			instance = new Plugin( $(this), methodOrOptions );	// ok to overwrite if this is a re-init
 			$(this).data( PLUGIN_NS, instance );
 			return $(this);
-		
+
 		// CASE: method called before init
 		} else if ( !instance ) {
 			$.error( 'Plugin must be initialised before using method: ' + methodOrOptions );
-		
+
 		// CASE: invalid method
 		} else if ( methodOrOptions.indexOf('_') == 0 ) {
 			$.error( 'Method ' +  methodOrOptions + ' is private!' );
 		} else {
 			$.error( 'Method ' +  methodOrOptions + ' does not exist.' );
 		}
-		
+
 	};
 
 })(jQuery);

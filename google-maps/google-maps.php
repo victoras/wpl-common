@@ -132,6 +132,8 @@ class WPlook_Google_Maps {
 			'lightness' => null,
 			'hue' => null,
 			'snazzymaps' => null,
+			'offsetX' => null,
+			'offsetY' => null
 		), $function_args );
 
 		// Set up coordinates
@@ -173,7 +175,8 @@ class WPlook_Google_Maps {
 					<?php if( !empty( $args['zoom'] ) ) : ?>data-zoom="<?php echo esc_attr( $args['zoom'] ); ?>"<?php endif; ?>
 					<?php if( !empty( $args['saturation'] ) ) : ?>data-saturation="<?php echo esc_attr( $args['saturation'] ); ?>"<?php endif; ?>
 					<?php if( !empty( $args['lightness'] ) ) : ?>data-lightness="<?php echo esc_attr( $args['lightness'] ); ?>"<?php endif; ?>
-					<?php if( !empty( $args['hue'] ) ) : ?>data-hue="<?php echo esc_attr( $args['hue'] ); ?>"<?php endif; ?>
+					<?php if( !empty( $args['offsetX'] ) ) : ?>data-offsetX="<?php echo esc_attr( $args['offsetX'] ); ?>"<?php endif; ?>
+					<?php if( !empty( $args['offsetY'] ) ) : ?>data-offsetY="<?php echo esc_attr( $args['offsetY'] ); ?>"<?php endif; ?>
 					>
 				</div>
 
