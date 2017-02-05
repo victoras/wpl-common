@@ -165,13 +165,15 @@ class WPlook_Google_Maps {
 				<div
 					class="wplook-google-map <?php echo esc_attr( $args['class'] ); ?>"
 					id="<?php echo esc_attr( $args['id'] ); ?>"
-					style="<?php echo esc_attr( $args['style'] ); ?>"
 					<?php if( !empty( $coordinates['latitude'] ) ) : ?>data-latitude="<?php echo esc_attr( $coordinates['latitude'] ); ?>"<?php endif; ?>
 					<?php if( !empty( $coordinates['longitude'] ) ) : ?>data-longitude="<?php echo esc_attr( $coordinates['longitude'] ); ?>"<?php endif; ?>
 					<?php if( !empty( $marker ) ) : ?>data-marker-image="<?php echo esc_attr( $marker ); ?>"<?php endif; ?>
 					<?php if( !empty( $marker_width ) ) : ?>data-marker-width="<?php echo esc_attr( $marker_width ); ?>"<?php endif; ?>
 					<?php if( !empty( $marker_height ) ) : ?>data-marker-height="<?php echo esc_attr( $marker_height ); ?>"<?php endif; ?>
-					<?php if( !empty( $args['height'] ) ) : ?>style="height: <?php echo intval( $args['height'] ); ?>px;"<?php endif; ?>
+					<?php if( !empty( $args['height'] ) || !empty( $args['style'] ) ) : ?>style="height: 
+						<?php if( !empty( $args['height'] ) ) : ?><?php echo intval( $args['height'] ); ?>px;<?php endif; ?>
+						<?php if( !empty( $args['style'] ) ) : ?><?php echo $args['style']; ?><?php endif; ?>
+					"<?php endif; ?>
 					<?php if( !empty( $args['zoom'] ) ) : ?>data-zoom="<?php echo esc_attr( $args['zoom'] ); ?>"<?php endif; ?>
 					<?php if( !empty( $args['saturation'] ) ) : ?>data-saturation="<?php echo esc_attr( $args['saturation'] ); ?>"<?php endif; ?>
 					<?php if( !empty( $args['lightness'] ) ) : ?>data-lightness="<?php echo esc_attr( $args['lightness'] ); ?>"<?php endif; ?>
