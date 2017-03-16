@@ -43,6 +43,8 @@
 			{
 				latitude: this.$T.data('latitude'),
 				longitude: this.$T.data('longitude'),
+				centerLatitude: this.$T.data('center-latitude'),
+				centerLongitude: this.$T.data('center-longitude'),
 				zoom: this.$T.data('zoom'),
 				marker: {
 					image: this.$T.data('marker-image'),
@@ -97,11 +99,16 @@
 
 		target.each( function( index, element ) {
 
-			if( !self.options.latitude && !self.options.longitude ) {
+			var additionalMarkers = $( element ).find( '.maps-marker' );
+			var markers = new Array();
+			var infoWindows = new Array();
+
+			if( ( !self.options.latitude && !self.options.longitude ) && additionalMarkers.length == 0 ) {
 				console.error( 'No coordinates provided for map. Map could not be generated.' );
 				return false;
 			}
 
+			// Set styles options
 			if( self.options.saturation || self.options.lightness || self.options.hue ) {
 				var styles = [
 					{
@@ -121,18 +128,47 @@
 				var styles = false;
 			}
 
-			self.map = new google.maps.Map( $( element )[0], {
-				center: {
+			// Generate center
+			if( self.options.centerLatitude && self.options.centerLongitude ) {
+				var center = {
+					lat: parseFloat( self.options.centerLatitude ),
+					lng: parseFloat( self.options.centerLongitude )
+				};
+			} else if( self.options.latitude && self.options.longitude ) {
+				var center = {
 					lat: parseFloat( self.options.latitude ),
 					lng: parseFloat( self.options.longitude )
-				},
+				};
+			} else if( additionalMarkers.length > 0 ) {
+				var averageLat = 0, averageLng = 0;
+
+				for (var i = 0; i < additionalMarkers.length; i++) {
+					averageLat += parseFloat( additionalMarkers[i].dataset.latitude );
+					averageLng += parseFloat( additionalMarkers[i].dataset.longitude );
+				}
+
+				averageLat = averageLat / additionalMarkers.length;
+				averageLng = averageLng / additionalMarkers.length;
+
+				var center = {
+					lat: parseFloat( averageLat ),
+					lng: parseFloat( averageLng )
+				};
+			} else {
+				var center = false;
+			}
+
+			// Generate map
+			self.map = new google.maps.Map( $( element )[0], {
+				center: center,
 				zoom: parseFloat( self.options.zoom ),
 				disableDefaultUI: true,
 				scrollwheel: false,
 				styles: styles
 			} );
 
-			if( self.options.marker.image ) {
+			// Add [wpls_map] marker
+			if( ( self.options.latitude && self.options.longitude ) && self.options.marker.image ) {
 				// Scale image proportionally to nearest size fitting 32x32px
 				if(
 					( !self.options.marker.width || !self.options.marker.height ) ||
@@ -147,7 +183,7 @@
 					self.options.marker.height = Math.round( self.options.marker.height * ratio );
 				}
 
-				var marker = new google.maps.Marker( {
+				markers[0] = new google.maps.Marker( {
 					position: {
 						lat: parseFloat( self.options.latitude ),
 						lng: parseFloat( self.options.longitude )
@@ -158,8 +194,8 @@
 					},
 					map: self.map
 				} );
-			} else {
-				var marker = new google.maps.Marker( {
+			} else if( self.options.latitude && self.options.longitude ) {
+				markers[0] = new google.maps.Marker( {
 					position: {
 						lat: parseFloat( self.options.latitude ),
 						lng: parseFloat( self.options.longitude )
@@ -168,6 +204,52 @@
 				} );
 			}
 
+			// Add additional markers from the [wpls_map_item] shortcode
+			for (var i = 0; i < additionalMarkers.length; i++) {
+				var markerOptions = {
+					position: {
+						lat: parseFloat( additionalMarkers[i].dataset.latitude ),
+						lng: parseFloat( additionalMarkers[i].dataset.longitude )
+					},
+					map: self.map
+				};
+
+				// Scale image proportionally to nearest size fitting 32x32px
+				if(
+					( !additionalMarkers[i].dataset.markerWidth || !additionalMarkers[i].dataset.markerHeight ) ||
+					!( additionalMarkers[i].dataset.markerWidth != additionalMarkers[i].dataset.markerHeight ) ||
+					( additionalMarkers[i].dataset.markerWidth == 32 && additionalMarkers[i].dataset.markerHeight == 32 )
+				) {
+					additionalMarkers[i].dataset.markerWidth = 32;
+					additionalMarkers[i].dataset.markerHeight = 32;
+				} else {
+					var ratio = Math.min( 32 / additionalMarkers[i].dataset.markerWidth, 32 / additionalMarkers[i].dataset.markerHeight );
+					additionalMarkers[i].dataset.markerWidth = Math.round( additionalMarkers[i].dataset.markerWidth * ratio );
+					additionalMarkers[i].dataset.markerHeight = Math.round( additionalMarkers[i].dataset.markerHeight * ratio );
+				}
+
+				// Add icon
+				markerOptions.icon = {
+					url: additionalMarkers[i].dataset.markerImage,
+					scaledSize: new google.maps.Size( parseInt( additionalMarkers[i].dataset.markerWidth ), parseInt( additionalMarkers[i].dataset.markerHeight ) )
+				};
+
+				markers[i+1] = new google.maps.Marker( markerOptions );
+
+				// Add tooltip
+				if( additionalMarkers[i].innerHTML ) {
+					infoWindows[i] = new google.maps.InfoWindow({
+						content: additionalMarkers[i].innerHTML
+					});
+
+					markers[i+1].set('index', i);
+					markers[i+1].addListener( 'click', function() {
+						infoWindows[this.get('index')].open( self.map, this );
+					} );
+				}
+			}
+
+			// Offset options
 			if( self.options.offsetX || self.options.offsetY ) {
 				if( self.options.offsetX && typeof self.options.offsetX === 'string' && self.options.offsetX.indexOf( '%' ) != -1 && parseFloat( self.options.offsetX ) <= 100 && parseFloat( self.options.offsetX ) >= -100 ) { // Valid percentage value
 					var containerWidth = $( window ).width();

@@ -133,7 +133,8 @@ class WPlook_Google_Maps {
 			'hue' => null,
 			'snazzymaps' => null,
 			'offsetX' => null,
-			'offsetY' => null
+			'offsetY' => null,
+			'content' => null
 		), $function_args );
 
 		// Set up coordinates
@@ -144,6 +145,93 @@ class WPlook_Google_Maps {
 		} elseif( !empty( $args['latitude'] ) && !empty( $args['longitude'] ) ) {
 			$coordinates['latitude'] = $args['latitude'];
 			$coordinates['longitude'] = $args['longitude'];
+		} else {
+			$coordinates['latitude'] = false;
+			$coordinates['longitude'] = false;
+		}
+
+		// Get map center
+		if( !empty( $args['center'] ) ) {
+			$center = $this->get_coordinates( $args['center'] );
+		} else {
+			$center['latitude'] = false;
+			$center['longitude'] = false;
+		}
+
+		// Set up marker, either by ID or URL
+		if( intval( $args['marker'] ) != 0 ) {
+			$marker = wp_get_attachment_image_url( $args['marker'], 'full' );
+			$marker_meta = wp_get_attachment_metadata( $args['marker'] );
+			$marker_width = !empty( $marker_meta ) ? $marker_meta['width'] : false;
+			$marker_height = !empty( $marker_meta ) ? $marker_meta['height'] : false;
+		} else {
+			$marker = $args['marker'];
+			$marker_width = false;
+			$marker_height = false;
+		}
+
+		ob_start(); ?>
+			<div
+				class="wplook-google-map <?php echo esc_attr( $args['class'] ); ?>"
+				id="<?php echo esc_attr( $args['id'] ); ?>"
+				<?php if( !empty( $coordinates['latitude'] ) ) : ?>data-latitude="<?php echo esc_attr( $coordinates['latitude'] ); ?>"<?php endif; ?>
+				<?php if( !empty( $coordinates['longitude'] ) ) : ?>data-longitude="<?php echo esc_attr( $coordinates['longitude'] ); ?>"<?php endif; ?>
+				<?php if( !empty( $center['latitude'] ) ) : ?>data-center-latitude="<?php echo esc_attr( $center['latitude'] ); ?>"<?php endif; ?>
+				<?php if( !empty( $center['longitude'] ) ) : ?>data-center-longitude="<?php echo esc_attr( $center['longitude'] ); ?>"<?php endif; ?>
+				<?php if( !empty( $marker ) ) : ?>data-marker-image="<?php echo esc_attr( $marker ); ?>"<?php endif; ?>
+				<?php if( !empty( $marker_width ) ) : ?>data-marker-width="<?php echo esc_attr( $marker_width ); ?>"<?php endif; ?>
+				<?php if( !empty( $marker_height ) ) : ?>data-marker-height="<?php echo esc_attr( $marker_height ); ?>"<?php endif; ?>
+				<?php if( !empty( $args['height'] ) || !empty( $args['style'] ) ) : ?>style="height:
+					<?php if( !empty( $args['height'] ) ) : ?><?php echo intval( $args['height'] ); ?>px;<?php endif; ?>
+					<?php if( !empty( $args['style'] ) ) : ?><?php echo $args['style']; ?><?php endif; ?>
+				"<?php endif; ?>
+				<?php if( !empty( $args['zoom'] ) ) : ?>data-zoom="<?php echo esc_attr( $args['zoom'] ); ?>"<?php endif; ?>
+				<?php if( !empty( $args['saturation'] ) ) : ?>data-saturation="<?php echo esc_attr( $args['saturation'] ); ?>"<?php endif; ?>
+				<?php if( !empty( $args['lightness'] ) ) : ?>data-lightness="<?php echo esc_attr( $args['lightness'] ); ?>"<?php endif; ?>
+				<?php if( !empty( $args['offsetX'] ) ) : ?>data-offsetX="<?php echo esc_attr( $args['offsetX'] ); ?>"<?php endif; ?>
+				<?php if( !empty( $args['offsetY'] ) ) : ?>data-offsetY="<?php echo esc_attr( $args['offsetY'] ); ?>"<?php endif; ?>
+				>
+				<?php echo !empty( $args['content'] ) ? $args['content'] : ''; ?>
+			</div>
+
+			<?php if( !empty( $args['snazzymaps'] ) ) : ?>
+				<script type="text/template" id="wplook-google-map-template">
+					<?php echo $args['snazzymaps']; ?>
+				</script>
+			<?php endif; ?>
+		<?php $html = ob_get_clean();
+
+		if( isset( $html ) ) {
+			if( $echo == false ) {
+				return $html;
+			} else {
+				echo $html;
+			}
+		}
+
+	}
+
+	/**
+	 * Returns or outputs a marker for use inside of the map element.
+	 *
+	 * @since 1.1
+	 * @access public
+	 * @param array $args Array of relevant options.
+	 * @param bool $echo Whether to return or echo the HTML code.
+	 * @return string HTML marker code.
+	 */
+	public function generate_marker( $function_args, $echo = true ) {
+
+		// Set up default options
+		$args = array_merge( array(
+			'address' => null,
+			'marker' => null,
+			'tooltip_text' => null,
+		), $function_args );
+
+		// Set up coordinates
+		if( !empty( $args['address'] ) ) {
+			$coordinates = $this->get_coordinates( $args['address'] );
 		} else {
 			return;
 		}
@@ -160,36 +248,20 @@ class WPlook_Google_Maps {
 			$marker_height = false;
 		}
 
+		// Build HTML
 		if( !empty( $coordinates ) ) {
 			ob_start(); ?>
-				<div
-					class="wplook-google-map <?php echo esc_attr( $args['class'] ); ?>"
-					id="<?php echo esc_attr( $args['id'] ); ?>"
-					<?php if( !empty( $coordinates['latitude'] ) ) : ?>data-latitude="<?php echo esc_attr( $coordinates['latitude'] ); ?>"<?php endif; ?>
-					<?php if( !empty( $coordinates['longitude'] ) ) : ?>data-longitude="<?php echo esc_attr( $coordinates['longitude'] ); ?>"<?php endif; ?>
-					<?php if( !empty( $marker ) ) : ?>data-marker-image="<?php echo esc_attr( $marker ); ?>"<?php endif; ?>
-					<?php if( !empty( $marker_width ) ) : ?>data-marker-width="<?php echo esc_attr( $marker_width ); ?>"<?php endif; ?>
-					<?php if( !empty( $marker_height ) ) : ?>data-marker-height="<?php echo esc_attr( $marker_height ); ?>"<?php endif; ?>
-					<?php if( !empty( $args['height'] ) || !empty( $args['style'] ) ) : ?>style="height: 
-						<?php if( !empty( $args['height'] ) ) : ?><?php echo intval( $args['height'] ); ?>px;<?php endif; ?>
-						<?php if( !empty( $args['style'] ) ) : ?><?php echo $args['style']; ?><?php endif; ?>
-					"<?php endif; ?>
-					<?php if( !empty( $args['zoom'] ) ) : ?>data-zoom="<?php echo esc_attr( $args['zoom'] ); ?>"<?php endif; ?>
-					<?php if( !empty( $args['saturation'] ) ) : ?>data-saturation="<?php echo esc_attr( $args['saturation'] ); ?>"<?php endif; ?>
-					<?php if( !empty( $args['lightness'] ) ) : ?>data-lightness="<?php echo esc_attr( $args['lightness'] ); ?>"<?php endif; ?>
-					<?php if( !empty( $args['offsetX'] ) ) : ?>data-offsetX="<?php echo esc_attr( $args['offsetX'] ); ?>"<?php endif; ?>
-					<?php if( !empty( $args['offsetY'] ) ) : ?>data-offsetY="<?php echo esc_attr( $args['offsetY'] ); ?>"<?php endif; ?>
-					>
-				</div>
-
-				<?php if( !empty( $args['snazzymaps'] ) ) : ?>
-					<script type="text/template" id="wplook-google-map-template">
-						<?php echo $args['snazzymaps']; ?>
-					</script>
-				<?php endif; ?>
+				<span class="maps-marker"
+				<?php if( !empty( $coordinates['latitude'] ) ) : ?>data-latitude="<?php echo esc_attr( $coordinates['latitude'] ); ?>"<?php endif; ?>
+				<?php if( !empty( $coordinates['longitude'] ) ) : ?>data-longitude="<?php echo esc_attr( $coordinates['longitude'] ); ?>"<?php endif; ?>
+				<?php if( !empty( $marker ) ) : ?>data-marker-image="<?php echo esc_attr( $marker ); ?>"<?php endif; ?>
+				<?php if( !empty( $marker_width ) ) : ?>data-marker-width="<?php echo esc_attr( $marker_width ); ?>"<?php endif; ?>
+				<?php if( !empty( $marker_height ) ) : ?>data-marker-height="<?php echo esc_attr( $marker_height ); ?>"<?php endif; ?>
+				><?php echo $args['tooltip_text']; ?></span>
 			<?php $html = ob_get_clean();
 		}
 
+		// Return or output HTML
 		if( isset( $html ) ) {
 			if( $echo == false ) {
 				return $html;
