@@ -36,8 +36,8 @@
 				},
 				styles: null,
 				snazzymaps: null,
-				offsetX: null,
-				offsetY: null
+				offsetx: null,
+				offsety: null
 			},
 			options,
 			{
@@ -54,8 +54,8 @@
 				saturation: this.$T.data('saturation'),
 				lightness: this.$T.data('lightness'),
 				hue: this.$T.data('hue'),
-				offsetX: this.$T.data('offsetX'),
-				offsetY: this.$T.data('offsetY')
+				offsetx: this.$T.data('offsetx'),
+				offsety: this.$T.data('offsety')
 			}
 		);
 
@@ -250,25 +250,25 @@
 			}
 
 			// Offset options
-			if( self.options.offsetX || self.options.offsetY ) {
-				if( self.options.offsetX && typeof self.options.offsetX === 'string' && self.options.offsetX.indexOf( '%' ) != -1 && parseFloat( self.options.offsetX ) <= 100 && parseFloat( self.options.offsetX ) >= -100 ) { // Valid percentage value
+			if( self.options.offsetx || self.options.offsety ) {
+				if( self.options.offsetx && typeof self.options.offsetx === 'string' && self.options.offsetx.indexOf( '%' ) != -1 && parseFloat( self.options.offsetx ) <= 100 && parseFloat( self.options.offsetx ) >= -100 ) { // Valid percentage value
 					var containerWidth = $( window ).width();
-					var offset = parseFloat( self.options.offsetX );
+					var offset = parseFloat( self.options.offsetx );
 					var offset = offset < 0 ? offset + 50 : offset - 50; // Marker is at 50% by default anyway
 					var x = containerWidth / 100 * offset;
-				} else if( self.options.offsetX ) {
-					var x = parseFloat( self.options.offsetX );
+				} else if( self.options.offsetx ) {
+					var x = parseFloat( self.options.offsetx );
 				} else {
 					var x = 0;
 				}
 
-				if( self.options.offsetY && typeof self.options.offsetY === 'string' && self.options.offsetY.indexOf( '%' ) != -1 && parseFloat( self.options.offsetY ) <= 100 && parseFloat( self.options.offsetY ) >= -100 ) { // Valid percentage value
+				if( self.options.offsety && typeof self.options.offsety === 'string' && self.options.offsety.indexOf( '%' ) != -1 && parseFloat( self.options.offsety ) <= 100 && parseFloat( self.options.offsety ) >= -100 ) { // Valid percentage value
 					var containerWidth = $( window ).width();
-					var offset = parseFloat( self.options.offsetY );
+					var offset = parseFloat( self.options.offsety );
 					var offset = offset < 0 ? offset + 50 : offset - 50; // Marker is at 50% by default anyway
 					var y = containerWidth / 100 * offset;
-				} else if( self.options.offsetY ) {
-					var y = parseFloat( self.options.offsetY );
+				} else if( self.options.offsety ) {
+					var y = parseFloat( self.options.offsety );
 				} else {
 					var y = 0;
 				}
