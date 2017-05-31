@@ -89,7 +89,7 @@ class WPlook_Google_Maps {
 			if( isset( $json->error_message ) ) {
 				echo 'Something went wrong when getting the coordinates for "' . $address . '" from the Google Maps Geocaching API. Error message from the API: "' . $json->error_message . '" Please try again.';
 			} else {
-				echo 'Something went wrong when getting the coordinates for "' . $address . '" from the Google Maps Geocaching API. Please try again.';
+				echo 'Something went wrong when getting the coordinates for "' . $address . '" from the Google Maps Geocaching API. Please make sure you have added API keys in Theme Options or plugin settings and try again.';
 			}
 
 			return false;
